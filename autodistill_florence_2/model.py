@@ -92,9 +92,12 @@ class Florence2(DetectionBaseModel):
 
     def __init__(self, ontology: CaptionOntology):
         model_id = "microsoft/Florence-2-large"
-        self.model = AutoModelForCausalLM.from_pretrained(
-            model_id, trust_remote_code=True, device_map="cuda"
-        ).eval()
+
+        with patch("transformers.dynamic_module_utils.get_imports", fixed_get_imports): #workaround for unnecessary flash_attn requirement        
+            self.model = AutoModelForCausalLM.from_pretrained(
+                model_id, trust_remote_code=True, device_map="cuda"
+            ).eval()
+          
         self.processor = AutoProcessor.from_pretrained(
             model_id, trust_remote_code=True, device_map="cuda"
         )
