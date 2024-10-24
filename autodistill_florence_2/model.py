@@ -15,6 +15,17 @@ from tqdm import tqdm
 from transformers import (AdamW, AutoModelForCausalLM, AutoProcessor,
                           get_scheduler)
 
+from unittest.mock import patch
+from transformers.dynamic_module_utils import get_imports
+
+def fixed_get_imports(filename: str | os.PathLike) -> list[str]:
+    if not str(filename).endswith("modeling_florence2.py"):
+        return get_imports(filename)
+    imports = get_imports(filename)
+    imports.remove("flash_attn")
+    return imports
+
+
 HOME = os.path.expanduser("~")
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -153,9 +164,11 @@ class Florence2Trainer(DetectionTargetModel):
         REVISION = "refs/pr/6"
         DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-        model = AutoModelForCausalLM.from_pretrained(
-            checkpoint, trust_remote_code=True, revision=REVISION
-        ).to(DEVICE)
+        with patch("transformers.dynamic_module_utils.get_imports", fixed_get_imports): #workaround for unnecessary flash_attn requirement  
+            model = AutoModelForCausalLM.from_pretrained(
+                checkpoint, trust_remote_code=True, revision=REVISION
+            ).to(DEVICE)
+          
         processor = AutoProcessor.from_pretrained(
             checkpoint, trust_remote_code=True, revision=REVISION
         )
