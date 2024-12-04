@@ -96,7 +96,7 @@ class Florence2(DetectionBaseModel):
     ontology: CaptionOntology
 
     def __init__(self, ontology: CaptionOntology):
-        model_id = "microsoft/Florence-2-large"
+        model_id = "model/Florence-2-large"
 
         with patch("transformers.dynamic_module_utils.get_imports", fixed_get_imports): #workaround for unnecessary flash_attn requirement        
             self.model = AutoModelForCausalLM.from_pretrained(
