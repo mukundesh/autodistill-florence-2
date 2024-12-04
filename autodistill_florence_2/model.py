@@ -71,7 +71,9 @@ def run_example(task_prompt, processor, model, image, text_input=None):
     else:
         prompt = task_prompt + text_input
 
-    inputs = processor(text=prompt, images=image, return_tensors="pt").to("cuda")
+    #inputs = processor(text=prompt, images=image, return_tensors="pt").to("cuda")
+
+    inputs = processor(text=prompt, images=image, return_tensors="pt").to(DEVICE)
     generated_ids = model.generate(
         input_ids=inputs["input_ids"],
         pixel_values=inputs["pixel_values"],
@@ -98,11 +100,11 @@ class Florence2(DetectionBaseModel):
 
         with patch("transformers.dynamic_module_utils.get_imports", fixed_get_imports): #workaround for unnecessary flash_attn requirement        
             self.model = AutoModelForCausalLM.from_pretrained(
-                model_id, trust_remote_code=True, device_map="cuda"
+                model_id, trust_remote_code=True, device_map=DEVICE
             ).eval()
           
         self.processor = AutoProcessor.from_pretrained(
-            model_id, trust_remote_code=True, device_map="cuda"
+            model_id, trust_remote_code=True, device_map=DEVICE
         )
         self.ontology = ontology
 
