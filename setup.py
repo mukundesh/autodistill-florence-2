@@ -21,6 +21,7 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/autodistill/autodistill-florence-2",
     install_requires=[
+        "huggingface_hub===0.21.4",
         "transformers",
         "einops",
         "timm",
