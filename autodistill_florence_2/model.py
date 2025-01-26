@@ -8,7 +8,7 @@ import torch
 from autodistill.detection import (CaptionOntology, DetectionBaseModel,
                                    DetectionTargetModel)
 from autodistill.helpers import load_image
-from peft import LoraConfig, get_peft_model
+#from peft import LoraConfig, get_peft_model
 from PIL import Image
 from torch.utils.data import DataLoader, Dataset
 from tqdm import tqdm
