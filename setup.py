@@ -28,7 +28,6 @@ setuptools.setup(
         "numpy",
         "supervision",
         "roboflow",
-        "peft",
         "Pillow",
         "tqdm",
         "autodistill"
